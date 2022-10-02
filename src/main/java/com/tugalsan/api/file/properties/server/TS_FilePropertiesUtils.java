@@ -48,7 +48,7 @@ public class TS_FilePropertiesUtils {
     }
 
     public static List<String> getAllKeys(Properties source) {
-        return TGS_StreamUtils.toList(
+        return TGS_StreamUtils.toLst(
                 source.keySet().stream().map(k -> k.toString())
         );
     }
