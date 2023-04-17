@@ -13,13 +13,13 @@ public class TS_FilePropertiesUtils {
 
 //    final private static TS_Log d = TS_Log.of(TS_FilePropertiesUtils.class);
     public static Properties createPropertyReader(Class className) {
-        return TGS_UnSafe.compile(() -> {
+        return TGS_UnSafe.call(() -> {
             var propsName = className.getName();//NOT SIMPLE NAME
             var name = propsName.replace('.', '/').concat(".properties");
             var cl = ClassLoader.getSystemClassLoader();
             var in = cl.getResourceAsStream(name);
             if (in == null) {
-                TGS_UnSafe.catchMeIfUCan(TS_FilePropertiesUtils.class.getSimpleName(), "createPropertyReader", "in == null");
+                TGS_UnSafe.thrw(TS_FilePropertiesUtils.class.getSimpleName(), "createPropertyReader", "in == null");
             }
             var props = new Properties();
             props.load(in);
@@ -28,7 +28,7 @@ public class TS_FilePropertiesUtils {
     }
 
     public static void print(Properties config) {
-        TGS_UnSafe.execute(() -> config.store(System.out, "Loaded properties:"));
+        TGS_UnSafe.run(() -> config.store(System.out, "Loaded properties:"));
     }
 
     public static String getValue(Properties source, CharSequence key) {
@@ -85,7 +85,7 @@ public class TS_FilePropertiesUtils {
     }
 
     public static void write(Properties source, Path dest) {
-        TGS_UnSafe.execute(() -> {
+        TGS_UnSafe.run(() -> {
             try ( var os = Files.newOutputStream(dest);  var osw = new OutputStreamWriter(os, StandardCharsets.UTF_8);) {
                 source.store(osw, "");
             }
@@ -93,7 +93,7 @@ public class TS_FilePropertiesUtils {
     }
 
     public static Properties read(Path source) {
-        return TGS_UnSafe.compile(() -> {
+        return TGS_UnSafe.call(() -> {
             try ( var is = Files.newInputStream(source);  var isr = new InputStreamReader(is, StandardCharsets.UTF_8);) {
                 var config = new Properties();
                 config.load(isr);
