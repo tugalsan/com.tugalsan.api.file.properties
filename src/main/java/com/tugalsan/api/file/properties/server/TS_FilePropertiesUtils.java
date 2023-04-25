@@ -17,13 +17,27 @@ public class TS_FilePropertiesUtils {
             var propsName = className.getName();//NOT SIMPLE NAME
             var name = propsName.replace('.', '/').concat(".properties");
             var cl = ClassLoader.getSystemClassLoader();
-            var in = cl.getResourceAsStream(name);
-            if (in == null) {
-                TGS_UnSafe.thrw(TS_FilePropertiesUtils.class.getSimpleName(), "createPropertyReader", "in == null");
+            try (var is = cl.getResourceAsStream(name)) {
+                if (is == null) {
+                    TGS_UnSafe.thrw(TS_FilePropertiesUtils.class.getSimpleName(), "createPropertyReader", "in == null");
+                }
+                var props = new Properties();
+                props.load(is);
+                return props;
             }
-            var props = new Properties();
-            props.load(in);
-            return props;
+        });
+    }
+
+    public static Properties createPropertyReader(Path file) {
+        return TGS_UnSafe.call(() -> {
+            try (var is = Files.newInputStream(file)) {
+                if (is == null) {
+                    TGS_UnSafe.thrw(TS_FilePropertiesUtils.class.getSimpleName(), "createPropertyReader", "in == null");
+                }
+                var props = new Properties();
+                props.load(is);
+                return props;
+            }
         });
     }
 
@@ -86,7 +100,7 @@ public class TS_FilePropertiesUtils {
 
     public static void write(Properties source, Path dest) {
         TGS_UnSafe.run(() -> {
-            try ( var os = Files.newOutputStream(dest);  var osw = new OutputStreamWriter(os, StandardCharsets.UTF_8);) {
+            try (var os = Files.newOutputStream(dest); var osw = new OutputStreamWriter(os, StandardCharsets.UTF_8);) {
                 source.store(osw, "");
             }
         });
@@ -94,7 +108,7 @@ public class TS_FilePropertiesUtils {
 
     public static Properties read(Path source) {
         return TGS_UnSafe.call(() -> {
-            try ( var is = Files.newInputStream(source);  var isr = new InputStreamReader(is, StandardCharsets.UTF_8);) {
+            try (var is = Files.newInputStream(source); var isr = new InputStreamReader(is, StandardCharsets.UTF_8);) {
                 var config = new Properties();
                 config.load(isr);
                 return config;
