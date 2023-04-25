@@ -12,7 +12,7 @@ import com.tugalsan.api.unsafe.client.*;
 public class TS_FilePropertiesUtils {
 
 //    final private static TS_Log d = TS_Log.of(TS_FilePropertiesUtils.class);
-    public static Properties createPropertyReader(Class className) {
+    public static Optional<Properties> createPropertyReader(Class className) {
         return TGS_UnSafe.call(() -> {
             var propsName = className.getName();//NOT SIMPLE NAME
             var name = propsName.replace('.', '/').concat(".properties");
@@ -23,12 +23,15 @@ public class TS_FilePropertiesUtils {
                 }
                 var props = new Properties();
                 props.load(is);
-                return props;
+                return Optional.of(props);
             }
+        }, e -> {
+            e.printStackTrace();
+            return Optional.empty();
         });
     }
 
-    public static Properties createPropertyReader(Path file) {
+    public static Optional<Properties> createPropertyReader(Path file) {
         return TGS_UnSafe.call(() -> {
             try (var is = Files.newInputStream(file)) {
                 if (is == null) {
@@ -36,8 +39,11 @@ public class TS_FilePropertiesUtils {
                 }
                 var props = new Properties();
                 props.load(is);
-                return props;
+                return Optional.of(props);
             }
+        }, e -> {
+            e.printStackTrace();
+            return Optional.empty();
         });
     }
 
