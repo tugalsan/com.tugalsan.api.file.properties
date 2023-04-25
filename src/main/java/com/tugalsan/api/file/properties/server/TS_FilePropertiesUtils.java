@@ -11,7 +11,6 @@ import com.tugalsan.api.unsafe.client.*;
 
 public class TS_FilePropertiesUtils {
 
-//    final private static TS_Log d = TS_Log.of(TS_FilePropertiesUtils.class);
     public static Optional<Properties> createPropertyReader(Class className) {
         return TGS_UnSafe.call(() -> {
             var propsName = className.getName();//NOT SIMPLE NAME
