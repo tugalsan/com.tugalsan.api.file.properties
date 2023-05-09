@@ -103,6 +103,10 @@ public class TS_FilePropertiesUtils {
         });
     }
 
+    public static void clear(Properties source) {
+        source.clear();
+    }
+
     public static void write(Properties source, Path dest) {
         TGS_UnSafe.run(() -> {
             try (var os = Files.newOutputStream(dest); var osw = new OutputStreamWriter(os, StandardCharsets.UTF_8);) {
