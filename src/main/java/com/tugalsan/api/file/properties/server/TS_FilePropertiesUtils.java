@@ -69,7 +69,7 @@ public class TS_FilePropertiesUtils {
         }
         source.setProperty(key.toString(), value.toString());
     }
-
+    
     public static List<String> getAllKeys(Properties source) {
         return TGS_StreamUtils.toLst(
                 source.keySet().stream().map(k -> k.toString())
