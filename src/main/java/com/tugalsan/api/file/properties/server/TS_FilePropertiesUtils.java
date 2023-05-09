@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.stream.*;
 import com.tugalsan.api.pack.client.*;
 import com.tugalsan.api.stream.client.*;
+import com.tugalsan.api.string.client.TGS_StringUtils;
 import com.tugalsan.api.unsafe.client.*;
 
 public class TS_FilePropertiesUtils {
@@ -50,8 +51,9 @@ public class TS_FilePropertiesUtils {
         TGS_UnSafe.run(() -> config.store(System.out, "Loaded properties:"));
     }
 
-    public static String getValue(Properties source, CharSequence key) {
-        return source.getProperty(key.toString());
+    public static Optional<String> getValue(Properties source, CharSequence key) {
+        var result = source.getProperty(key.toString());
+        return TGS_StringUtils.isNullOrEmpty(result) ? Optional.empty() : Optional.of(result);
     }
 
     public static String getValue(Properties source, CharSequence key, CharSequence defaultValue) {
@@ -69,7 +71,7 @@ public class TS_FilePropertiesUtils {
         }
         source.setProperty(key.toString(), value.toString());
     }
-    
+
     public static List<String> getAllKeys(Properties source) {
         return TGS_StreamUtils.toLst(
                 source.keySet().stream().map(k -> k.toString())
