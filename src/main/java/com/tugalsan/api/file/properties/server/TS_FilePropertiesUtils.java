@@ -58,7 +58,11 @@ public class TS_FilePropertiesUtils {
         return defaultValue == null ? source.getProperty(key.toString()) : source.getProperty(key.toString(), defaultValue.toString());
     }
 
-    public static void setValue(Properties source, CharSequence key, CharSequence value) {
+    public static void removeValue(Properties source, CharSequence key) {
+        setValue(source, key, null);
+    }
+
+    public static void setValue(Properties source, CharSequence key, Object value) {
         if (value == null) {
             source.remove(key.toString());
             return;
