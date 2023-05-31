@@ -5,7 +5,7 @@ import java.nio.charset.*;
 import java.nio.file.*;
 import java.util.*;
 import java.util.stream.*;
-import com.tugalsan.api.pack.client.*;
+import com.tugalsan.api.tuple.client.*;
 import com.tugalsan.api.stream.client.*;
 import com.tugalsan.api.string.client.TGS_StringUtils;
 import com.tugalsan.api.unsafe.client.*;
@@ -83,17 +83,17 @@ public class TS_FilePropertiesUtils {
         IntStream.range(0, sourceKey.size()).forEachOrdered(i -> dest.setProperty(sourceKey.get(i), sourceValue.get(i)));
     }
 
-    public void toProperties(List<TGS_Pack2<String, String>> destKeyAndValues, Properties dest) {
+    public void toProperties(List<TGS_Tuple2<String, String>> destKeyAndValues, Properties dest) {
         dest.clear();
         IntStream.range(0, destKeyAndValues.size()).forEachOrdered(i -> {
             dest.setProperty(destKeyAndValues.get(i).value0, destKeyAndValues.get(i).value1);
         });
     }
 
-    public void toList(Properties source, List<TGS_Pack2<String, String>> destKeyAndValues) {
+    public void toList(Properties source, List<TGS_Tuple2<String, String>> destKeyAndValues) {
         destKeyAndValues.clear();
         source.entrySet().stream().forEachOrdered(entry -> {
-            destKeyAndValues.add(new TGS_Pack2(
+            destKeyAndValues.add(new TGS_Tuple2(
                     String.valueOf(entry.getKey()),
                     String.valueOf(entry.getValue())
             ));
