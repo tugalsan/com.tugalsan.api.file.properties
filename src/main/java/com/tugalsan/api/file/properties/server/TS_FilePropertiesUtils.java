@@ -121,6 +121,16 @@ public class TS_FilePropertiesUtils {
         });
     }
 
+    public static Optional<Properties> read(CharSequence data) {
+        return TGS_UnSafe.call(() -> {
+            var config = new Properties();
+            if (data != null) {
+                config.load(new StringReader(data.toString()));
+            }
+            return Optional.of(config);
+        }, e -> Optional.empty());
+    }
+
     public static Properties read(Path source) {
         return TGS_UnSafe.call(() -> {
             try (var is = Files.newInputStream(source); var isr = new InputStreamReader(is, StandardCharsets.UTF_8);) {
