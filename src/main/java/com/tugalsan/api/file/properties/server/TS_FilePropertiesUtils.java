@@ -8,6 +8,7 @@ import java.util.stream.*;
 import com.tugalsan.api.tuple.client.*;
 import com.tugalsan.api.stream.client.*;
 import com.tugalsan.api.string.client.TGS_StringUtils;
+import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import com.tugalsan.api.unsafe.client.*;
 
 public class TS_FilePropertiesUtils {
@@ -16,7 +17,7 @@ public class TS_FilePropertiesUtils {
         return new Properties();
     }
 
-    public static Optional<Properties> createPropertyReader(Class className) {
+    public static TGS_UnionExcuse<Properties> createPropertyReader(Class className) {
         return TGS_UnSafe.call(() -> {
             var propsName = className.getName();//NOT SIMPLE NAME
             var name = propsName.replace('.', '/').concat(".properties");
@@ -27,15 +28,14 @@ public class TS_FilePropertiesUtils {
                 }
                 var props = new Properties();
                 props.load(is);
-                return Optional.of(props);
+                return TGS_UnionExcuse.of(props);
             }
         }, e -> {
-            e.printStackTrace();
-            return Optional.empty();
+            return TGS_UnionExcuse.ofExcuse(e);
         });
     }
 
-    public static Optional<Properties> createPropertyReader(Path file) {
+    public static TGS_UnionExcuse<Properties> createPropertyReader(Path file) {
         return TGS_UnSafe.call(() -> {
             try (var is = Files.newInputStream(file)) {
                 if (is == null) {
@@ -43,11 +43,10 @@ public class TS_FilePropertiesUtils {
                 }
                 var props = new Properties();
                 props.load(is);
-                return Optional.of(props);
+                return TGS_UnionExcuse.of(props);
             }
         }, e -> {
-            e.printStackTrace();
-            return Optional.empty();
+            return TGS_UnionExcuse.ofExcuse(e);
         });
     }
 
@@ -138,14 +137,14 @@ public class TS_FilePropertiesUtils {
         });
     }
 
-    public static Optional<Properties> read(CharSequence data) {
+    public static TGS_UnionExcuse<Properties> read(CharSequence data) {
         return TGS_UnSafe.call(() -> {
             var config = new Properties();
             if (data != null) {
                 config.load(new StringReader(data.toString()));
             }
-            return Optional.of(config);
-        }, e -> Optional.empty());
+            return TGS_UnionExcuse.of(config);
+        }, e -> TGS_UnionExcuse.ofExcuse(e));
     }
 
     public static Properties read(Path source) {
