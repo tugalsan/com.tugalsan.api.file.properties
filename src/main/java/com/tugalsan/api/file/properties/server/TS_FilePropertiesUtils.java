@@ -56,7 +56,7 @@ public class TS_FilePropertiesUtils {
 
     public static Optional<String> getValue(Properties source, CharSequence key) {
         var result = source.getProperty(key.toString());
-        return TGS_StringUtils.isNullOrEmpty(result) ? Optional.empty() : Optional.of(result);
+        return TGS_StringUtils.cmn().isNullOrEmpty(result) ? Optional.empty() : Optional.of(result);
     }
 
     public static String getValue(Properties source, CharSequence key, CharSequence defaultValue) {
