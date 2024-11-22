@@ -76,7 +76,7 @@ public class TS_FilePropertiesUtils {
         return defStr;
     }
 
-    public static void removeValue(Properties source, CharSequence key) {
+    public static void removeKey(Properties source, CharSequence key) {
         setValue(source, key, null);
     }
 
@@ -92,6 +92,26 @@ public class TS_FilePropertiesUtils {
         return TGS_StreamUtils.toLst(
                 source.keySet().stream().map(k -> k.toString())
         );
+    }
+
+    public static List<TS_FilePropertiesItem> getAllItems(Properties source) {
+        List<TS_FilePropertiesItem> items = new ArrayList();
+        getAllKeys(source).forEach(name -> {
+            items.add(TS_FilePropertiesItem.of(name, getValue(source, name).orElseThrow()));
+        });
+        return items;
+    }
+
+    public static void setAllItems(Properties source, List<TS_FilePropertiesItem> items, boolean skipIfExists) {
+        items.forEach(item -> {
+            if (skipIfExists) {
+                var op = getValue(source, item.name());
+                if (op.isPresent()) {
+                    return;
+                }
+            }
+            setValue(source, item.name(), item.value());
+        });
     }
 
     public void toProperties(List<String> sourceKey, List<String> sourceValue, Properties dest) {
