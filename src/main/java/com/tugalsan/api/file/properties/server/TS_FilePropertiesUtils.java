@@ -1,53 +1,20 @@
 package com.tugalsan.api.file.properties.server;
 
+import com.tugalsan.api.stream.client.TGS_StreamUtils;
+import com.tugalsan.api.string.client.TGS_StringUtils;
+import com.tugalsan.api.tuple.client.TGS_Tuple2;
 import java.io.*;
 import java.nio.charset.*;
 import java.nio.file.*;
 import java.util.*;
-import java.util.stream.*;
-import com.tugalsan.api.tuple.client.*;
-import com.tugalsan.api.stream.client.*;
-import com.tugalsan.api.string.client.TGS_StringUtils;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import com.tugalsan.api.unsafe.client.*;
+import java.util.stream.IntStream;
 
 public class TS_FilePropertiesUtils {
 
-    public static Properties empty() {
+    public static Properties createNewInstance() {
         return new Properties();
-    }
-
-    public static TGS_UnionExcuse<Properties> createPropertyReader(Class className) {
-        return TGS_UnSafe.call(() -> {
-            var propsName = className.getName();//NOT SIMPLE NAME
-            var name = propsName.replace('.', '/').concat(".properties");
-            var cl = ClassLoader.getSystemClassLoader();
-            try (var is = cl.getResourceAsStream(name)) {
-                if (is == null) {
-                    TGS_UnSafe.thrw(TS_FilePropertiesUtils.class.getSimpleName(), "createPropertyReader", "in == null");
-                }
-                var props = new Properties();
-                props.load(is);
-                return TGS_UnionExcuse.of(props);
-            }
-        }, e -> {
-            return TGS_UnionExcuse.ofExcuse(e);
-        });
-    }
-
-    public static TGS_UnionExcuse<Properties> createPropertyReader(Path file) {
-        return TGS_UnSafe.call(() -> {
-            try (var is = Files.newInputStream(file)) {
-                if (is == null) {
-                    TGS_UnSafe.thrw(TS_FilePropertiesUtils.class.getSimpleName(), "createPropertyReader", "in == null");
-                }
-                var props = new Properties();
-                props.load(is);
-                return TGS_UnionExcuse.of(props);
-            }
-        }, e -> {
-            return TGS_UnionExcuse.ofExcuse(e);
-        });
     }
 
     public static void print(Properties config) {
@@ -149,14 +116,6 @@ public class TS_FilePropertiesUtils {
         source.clear();
     }
 
-    public static void write(Properties source, Path dest) {
-        TGS_UnSafe.run(() -> {
-            try (var os = Files.newOutputStream(dest); var osw = new OutputStreamWriter(os, StandardCharsets.UTF_8);) {
-                source.store(osw, "");
-            }
-        });
-    }
-
     public static TGS_UnionExcuse<Properties> read(CharSequence data) {
         return TGS_UnSafe.call(() -> {
             var config = new Properties();
@@ -165,6 +124,47 @@ public class TS_FilePropertiesUtils {
             }
             return TGS_UnionExcuse.of(config);
         }, e -> TGS_UnionExcuse.ofExcuse(e));
+    }
+
+    public static TGS_UnionExcuse<Properties> createPropertyReader(Class className) {
+        return TGS_UnSafe.call(() -> {
+            var propsName = className.getName();//NOT SIMPLE NAME
+            var name = propsName.replace('.', '/').concat(".properties");
+            var cl = ClassLoader.getSystemClassLoader();
+            try (var is = cl.getResourceAsStream(name)) {
+                if (is == null) {
+                    TGS_UnSafe.thrw(TS_FilePropertiesUtils.class.getSimpleName(), "createPropertyReader", "in == null");
+                }
+                var props = new Properties();
+                props.load(is);
+                return TGS_UnionExcuse.of(props);
+            }
+        }, e -> {
+            return TGS_UnionExcuse.ofExcuse(e);
+        });
+    }
+
+    public static TGS_UnionExcuse<Properties> createPropertyReader(Path file) {
+        return TGS_UnSafe.call(() -> {
+            try (var is = Files.newInputStream(file)) {
+                if (is == null) {
+                    TGS_UnSafe.thrw(TS_FilePropertiesUtils.class.getSimpleName(), "createPropertyReader", "in == null");
+                }
+                var props = new Properties();
+                props.load(is);
+                return TGS_UnionExcuse.of(props);
+            }
+        }, e -> {
+            return TGS_UnionExcuse.ofExcuse(e);
+        });
+    }
+
+    public static void write(Properties source, Path dest) {
+        TGS_UnSafe.run(() -> {
+            try (var os = Files.newOutputStream(dest); var osw = new OutputStreamWriter(os, StandardCharsets.UTF_8);) {
+                source.store(osw, "");
+            }
+        });
     }
 
     public static Properties read(Path source) {
