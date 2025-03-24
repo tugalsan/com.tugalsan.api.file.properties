@@ -1,7 +1,7 @@
 package com.tugalsan.api.file.properties.server;
 
-import com.tugalsan.api.function.client.maythrow.checkedexceptions.TGS_FuncMTCEUtils;
-import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCEUtils;
+import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
+import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTUUtils;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import com.tugalsan.api.string.client.TGS_StringUtils;
 import com.tugalsan.api.tuple.client.TGS_Tuple2;
@@ -20,7 +20,7 @@ public class TS_FilePropertiesUtils {
     }
 
     public static void print(Properties config) {
-        TGS_FuncMTCEUtils.run(() -> config.store(System.out, "Loaded properties:"));
+        TGS_FuncMTCUtils.run(() -> config.store(System.out, "Loaded properties:"));
     }
 
     public static Optional<String> getValue(Properties source, CharSequence key) {
@@ -119,7 +119,7 @@ public class TS_FilePropertiesUtils {
     }
 
     public static TGS_UnionExcuse<Properties> read(CharSequence data) {
-        return TGS_FuncMTCEUtils.call(() -> {
+        return TGS_FuncMTCUtils.call(() -> {
             var config = new Properties();
             if (data != null) {
                 config.load(new StringReader(data.toString()));
@@ -129,13 +129,13 @@ public class TS_FilePropertiesUtils {
     }
 
     public static TGS_UnionExcuse<Properties> createPropertyReader(Class className) {
-        return TGS_FuncMTCEUtils.call(() -> {
+        return TGS_FuncMTCUtils.call(() -> {
             var propsName = className.getName();//NOT SIMPLE NAME
             var name = propsName.replace('.', '/').concat(".properties");
             var cl = ClassLoader.getSystemClassLoader();
             try (var is = cl.getResourceAsStream(name)) {
                 if (is == null) {
-                    TGS_FuncMTUCEUtils.thrw(TS_FilePropertiesUtils.class.getSimpleName(), "createPropertyReader", "in == null");
+                    TGS_FuncMTUUtils.thrw(TS_FilePropertiesUtils.class.getSimpleName(), "createPropertyReader", "in == null");
                 }
                 var props = new Properties();
                 props.load(is);
@@ -147,10 +147,10 @@ public class TS_FilePropertiesUtils {
     }
 
     public static TGS_UnionExcuse<Properties> createPropertyReader(Path file) {
-        return TGS_FuncMTCEUtils.call(() -> {
+        return TGS_FuncMTCUtils.call(() -> {
             try (var is = Files.newInputStream(file)) {
                 if (is == null) {
-                    TGS_FuncMTUCEUtils.thrw(TS_FilePropertiesUtils.class.getSimpleName(), "createPropertyReader", "in == null");
+                    TGS_FuncMTUUtils.thrw(TS_FilePropertiesUtils.class.getSimpleName(), "createPropertyReader", "in == null");
                 }
                 var props = new Properties();
                 props.load(is);
@@ -162,7 +162,7 @@ public class TS_FilePropertiesUtils {
     }
 
     public static void write(Properties source, Path dest) {
-        TGS_FuncMTCEUtils.run(() -> {
+        TGS_FuncMTCUtils.run(() -> {
             try (var os = Files.newOutputStream(dest); var osw = new OutputStreamWriter(os, StandardCharsets.UTF_8);) {
                 source.store(osw, "");
             }
@@ -170,7 +170,7 @@ public class TS_FilePropertiesUtils {
     }
 
     public static Properties read(Path source) {
-        return TGS_FuncMTCEUtils.call(() -> {
+        return TGS_FuncMTCUtils.call(() -> {
             try (var is = Files.newInputStream(source); var isr = new InputStreamReader(is, StandardCharsets.UTF_8);) {
                 var config = new Properties();
                 config.load(isr);
