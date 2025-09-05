@@ -15,7 +15,11 @@ import java.util.stream.IntStream;
 
 public class TS_FilePropertiesUtils {
 
-    public static Properties createNewInstance() {
+    private TS_FilePropertiesUtils() {
+
+    }
+
+    public static Properties ofEmpty() {
         return new Properties();
     }
 
@@ -128,14 +132,14 @@ public class TS_FilePropertiesUtils {
         }, e -> TGS_UnionExcuse.ofExcuse(e));
     }
 
-    public static TGS_UnionExcuse<Properties> createPropertyReader(Class className) {
+    public static TGS_UnionExcuse<Properties> ofClass(Class className) {
         return TGS_FuncMTCUtils.call(() -> {
             var propsName = className.getName();//NOT SIMPLE NAME
             var name = propsName.replace('.', '/').concat(".properties");
             var cl = ClassLoader.getSystemClassLoader();
             try (var is = cl.getResourceAsStream(name)) {
                 if (is == null) {
-                    TGS_FuncMTUUtils.thrw(TS_FilePropertiesUtils.class.getSimpleName(), "createPropertyReader", "in == null");
+                    TGS_FuncMTUUtils.thrw(TS_FilePropertiesUtils.class.getSimpleName(), "ofClass", "in == null");
                 }
                 var props = new Properties();
                 props.load(is);
@@ -146,11 +150,11 @@ public class TS_FilePropertiesUtils {
         });
     }
 
-    public static TGS_UnionExcuse<Properties> createPropertyReader(Path file) {
+    public static TGS_UnionExcuse<Properties> ofPath(Path file) {
         return TGS_FuncMTCUtils.call(() -> {
             try (var is = Files.newInputStream(file)) {
                 if (is == null) {
-                    TGS_FuncMTUUtils.thrw(TS_FilePropertiesUtils.class.getSimpleName(), "createPropertyReader", "in == null");
+                    TGS_FuncMTUUtils.thrw(TS_FilePropertiesUtils.class.getSimpleName(), "ofPath", "in == null");
                 }
                 var props = new Properties();
                 props.load(is);
